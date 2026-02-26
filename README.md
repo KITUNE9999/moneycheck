@@ -1,30 +1,34 @@
-# {PROJECT_NAME}
+# MoneyCheck
 
-**Concept**: {ONE_LINE_CONCEPT}
+**Concept**: 夫婦で使えるシンプル家計簿PWA
 
 ## Overview
 
-{PROJECT_OVERVIEW}
+MoneyCheckは、一緒に暮らす二人のための家計簿アプリです。
+最小限の操作で支出を記録し、月の収支を個人別・合算・カテゴリ別で把握できます。
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| BE | {BACKEND} |
-| FE | {FRONTEND} |
-| DB | {DATABASE} |
+| BE | Next.js API Routes |
+| FE | Next.js + Tailwind CSS |
+| DB | Google Spreadsheets (Sheets API) |
+| Auth | シンプルパスワード認証 |
+| Host | Vercel |
+| Mobile | PWA |
 
 ## Getting Started
 
 ```bash
-cd C:\project\{PROJECT_NAME}
+cd C:\project\moneycheck
 run.bat
 ```
 
 ## Project Structure
 
 ```
-{PROJECT_NAME}/
+moneycheck/
 ├── .claude/
 │   ├── agents/          # Claude Code用エージェント定義
 │   └── skills/          # Claude Code用スキル定義
@@ -36,6 +40,9 @@ run.bat
 └── push.bat             # Git push用
 ```
 
-## Links
+## Features
 
-- GitHub: {GITHUB_URL}
+- 簡単入力: 最小限のタップで支出を記録
+- 月別収支: 個人別・合算・カテゴリ別で一目で把握
+- 二人で共有: リアルタイムにお互いの入力を反映
+- PWA: スマホでもPCでも快適に利用

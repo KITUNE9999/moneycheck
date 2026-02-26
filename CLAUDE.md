@@ -1,16 +1,16 @@
-# {PROJECT_NAME}
+# MoneyCheck
 
-**Concept**: {ONE_LINE_CONCEPT}  
-**Core Value**: {CORE_VALUE}
+**Concept**: 夫婦で使えるシンプル家計簿PWA
+**Core Value**: 簡単入力・見える化・二人で共有
 
 ## Stack
 | Layer | Tech |
 |-------|------|
-| BE | {BACKEND} |
-| FE | {FRONTEND} |
-| Mobile | {MOBILE} |
-| DB | {DATABASE} |
-| Host | {HOSTING} |
+| BE | Next.js API Routes |
+| FE | Next.js + Tailwind CSS |
+| Mobile | PWA |
+| DB | Google Spreadsheets (Sheets API) |
+| Host | Vercel |
 | Dev | Antigravity + Claude Code CLI |
 
 ## Session Start (run at the beginning of every session)
@@ -76,14 +76,9 @@ Compacting（会話の圧縮）が発生して重要な情報が失われる可�
 | `.claude/skills/dev-flow.md` | Task classification, spec/review schema |
 | `.claude/skills/symbol-table.md` | AI-to-AI communication symbols |
 | `.claude/skills/review.md` | Review checklist |
-
-## Optional Skills (move to skills/ when applicable)
-| File | When to use |
-|------|-------------|
-| `.claude/skills/optional/privacy.md` | project handles personal data |
-| `.claude/skills/optional/accessibility.md` | project has user-facing UI |
-| `.claude/skills/optional/pwa.md` | mobile = PWA |
-| `.claude/skills/optional/app-store.md` | mobile = React Native |
+| `.claude/skills/pwa.md` | PWA guidelines and checklist |
+| `.claude/skills/accessibility.md` | Accessibility guidelines |
+| `.claude/skills/privacy.md` | Privacy and personal data handling |
 
 ## Agents
 | Agent | Role | Model |
@@ -91,8 +86,7 @@ Compacting（会話の圧縮）が発生して重要な情報が失われる可�
 | spec-writer | Spec docs, spec.json generation | haiku |
 | security-reviewer | Read-only code review | haiku |
 | design-reviewer | URL/image design feedback | sonnet |
-| {AGENT_4} | {ROLE_4} | {MODEL_4} |
-| {AGENT_5} | {ROLE_5} | {MODEL_5} |
+| uiux-designer | UI/UX design and review | sonnet |
 
 ## Optional Agents (move to agents/ when applicable)
 | File | When to use |
@@ -101,11 +95,10 @@ Compacting（会話の圧縮）が発生して重要な情報が失われる可�
 | `agents-optional/video-pipeline-engineer.md` | Video generation pipeline |
 | `agents-optional/strategy-advisor.md` | Periodic improvement proposals |
 | `agents-optional/mobile-engineer.md` | Mobile app development |
-| `agents-optional/uiux-designer.md` | User-facing UI design |
 | `agents-optional/workflow-engineer.md` | Business automation / BtoB |
 
 ## Git Rules
-- Repository: {GITHUB_URL}
+- Repository: https://github.com/KITUNE9999/moneycheck.git
 - Branches: `main` (production) / `develop` (development) / `feature/{task-id}`
 - **Auto-commit after every completed task**: `git add . → commit → push origin feature/{task-id}`
 - Commit message format: `[S/L] task-id: description`
@@ -121,22 +114,9 @@ Compacting（会話の圧縮）が発生して重要な情報が失われる可�
 - Monetization model is decided at project start — see `product-vision.md`
 
 ## UI Design Override
-{UI_DESIGN_OVERRIDE}
-<!-- 
-  インタビュー後に設定。以下はサンプル:
-
-  例1（AIらしさ全開）:
-  review.md の UI Design Philosophy（温かみ重視）は適用しない。
-  サイバー・デジタル感を前面に。ダークテーマ＋ネオンアクセント。
-
-  例2（デフォルト）:
-  なし（review.md のデフォルトUIルールを適用）
-
-  例3（ミニマル）:
-  review.md の温かみ方針に加え、極限までシンプルに。色数は3色以下。
--->
+なし（review.md のデフォルトUIルールを適用 — 温かみ重視）
 
 ## Routing Rules
-**Parallel**: 3+ independent tasks, no shared files, clear boundaries  
-**Sequential**: dependencies exist / shared files / unclear scope  
+**Parallel**: 3+ independent tasks, no shared files, clear boundaries
+**Sequential**: dependencies exist / shared files / unclear scope
 **Background (Ctrl+B)**: research, data fetching, non-blocking tasks

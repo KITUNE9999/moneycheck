@@ -1,77 +1,77 @@
-# Product Vision — {PROJECT_NAME}
+# Product Vision — MoneyCheck
 
 ## Why We Exist
-{WHY_WE_EXIST}
-— derived from interview Q1
+一緒に暮らし始めた夫婦が、既存アプリやExcelよりもっと簡単に家計を管理できるようにする。
+— 同居開始をきっかけに、二人の収支を楽に把握したいという実体験から生まれた。
 
 ## Core Insight
-- {INSIGHT_1} — from existing services or personal experience
-- {INSIGHT_2}
-- {INSIGHT_3}
+- 既存の家計簿アプリは機能が多すぎて操作が面倒
+- 二人で共有できるシンプルな家計簿ツールが少ない
+- Excelは柔軟だがスマホからの入力が不便
 
 ## Primary Target
-**"{PRIMARY_TARGET_PERSONA}"**
-- {TRAIT_1}
-- {TRAIT_2}
-- Willing to pay ¥{PRICE}/month
-- {TRAIT_3}
+**"同居を始めた共働き夫婦"**
+- スマホメインで使いたいがPCからも見たい
+- 細かい設定より「すぐ入力できる」を重視
+- 月にいくら使ったか、お互いの把握ができればOK
+- 収益化は不要（完全個人利用）
 
 ## Secondary Target
-- {SECONDARY_1}
-- {SECONDARY_2}
+- なし（二人専用アプリ）
 
 ## Core Value (in priority order)
-1. **{VALUE_1}** — {VALUE_1_DESC}
-2. **{VALUE_2}** — {VALUE_2_DESC}
-3. **{VALUE_3}** — {VALUE_3_DESC}
+1. **簡単入力** — 最小限のタップで支出を記録できる
+2. **見える化** — 月の収支が個人別・合算・カテゴリ別で一目でわかる
+3. **二人で共有** — お互いの入力がリアルタイムに反映される
 
 ## Differentiation
-| Competitor | Weakness | {PROJECT_NAME} Advantage |
-|------------|----------|--------------------------|
-| {COMPETITOR_1} | {WEAKNESS_1} | {ADVANTAGE_1} |
-| {COMPETITOR_2} | {WEAKNESS_2} | {ADVANTAGE_2} |
-| {COMPETITOR_3} | {WEAKNESS_3} | {ADVANTAGE_3} |
+| Competitor | Weakness | MoneyCheck Advantage |
+|------------|----------|----------------------|
+| マネーフォワード | 機能過多で操作が複雑 | 最小限の機能でシンプル |
+| Zaim | 操作ステップが多い | 少ないタップで入力完了 |
+| Excel/スプレッドシート | スマホからの入力が不便 | モバイル最適化されたPWA |
 
-**Unique position: "{UNIQUE_POSITION}"**
+**Unique position: "二人のための、最もシンプルな家計簿"**
 
 ## Feature Priority
 
 ### Must (MVP — build first)
-- {MUST_1}
-- {MUST_2}
-- {MUST_3}
+- ユーザー認証（二人分のアカウント）
+- 収支の簡単入力（金額・カテゴリ・日付・入力者）
+- 月別収支一覧（個人別・合算・カテゴリ別）
 
 ### Should (add in beta)
-- {SHOULD_1}
-- {SHOULD_2}
-- {SHOULD_3}
+- ダッシュボード（月のサマリー・グラフ表示）
+- カテゴリのカスタマイズ
+- 収入の記録と管理
 
 ### Could (growth phase)
-- {COULD_1}
-- {COULD_2}
+- 予算設定と超過アラート
+- CSV エクスポート
 
 ### Won't (out of scope)
-- {WONT_1}
-- {WONT_2}
+- レシート読み取り（OCR）
+- 銀行口座連携
 
 ## Monetization
-- **Model**: {subscription|ads|one-time} — {reasoning from Q7}
-- **Free**: {FREE_FEATURES}
-- **Premium ¥{PRICE}/month**: {PREMIUM_FEATURES} *(if subscription)*
-- **Ad placement**: {AD_STRATEGY} *(if ads)*
-- **Future**: {FUTURE_MONETIZE}
+- **Model**: なし — 完全個人利用のため収益化は行わない
+- **Free**: 全機能無料
+- **Future**: なし
 
 ## SaaS Dependency Map
 | Service | Purpose | Free tier limit | Monthly cost at scale | Alternative |
 |---------|---------|----------------|----------------------|-------------|
-| {SERVICE_1} | {PURPOSE} | {FREE_LIMIT} | {COST_AT_SCALE} | {ALT} |
+| Google Sheets API | DB (データ保存) | 無制限（API 300req/min） | 無料 | Supabase free tier |
+| Vercel | Hosting | 100GB bandwidth | $20/mo (Pro) | Cloudflare Pages (free) |
+
+**2人利用の場合、完全無料で運用可能。データはスプレッドシートで直接確認も可。**
 
 ## Roles
 | Role | Person |
 |------|--------|
-| Final decisions & funding | {OWNER_NAME} |
+| Final decisions & funding | KITUNE |
 | All design, implementation, improvement proposals | Claude (agent team) |
-| External API billing setup | {OWNER_NAME} |
+| External API billing setup | KITUNE |
 
 ## Claude's Autonomy Level
 
@@ -97,6 +97,6 @@
 - `{variable}` placeholder found in production code
 
 ## KPIs
-- 3 months: {KPI_3M}
-- 6 months: {KPI_6M}
-- 1 year: {KPI_1Y}
+- 3 months: 二人が毎日使い続けている
+- 6 months: 月の収支把握が習慣化し、無駄な支出が減っている
+- 1 year: 貯蓄目標を設定し達成に向かっている
