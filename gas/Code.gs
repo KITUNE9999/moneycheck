@@ -5,33 +5,34 @@
  * 1. Google Spreadsheet を開く
  * 2. 拡張機能 → Apps Script
  * 3. このコードを貼り付け
- * 4. デプロイ → 新しいデプロイ → ウェブアプリ
- *    - 次のユーザーとして実行: 自分
- *    - アクセスできるユーザー: 全員
- * 5. デプロイURLをコピーして、アプリの初回セットアップで入力
+ * 4. デプロイ → デプロイを管理 → 鉛筆アイコン → バージョン:新しいバージョン → デプロイ
+ *    ※初回のみ「新しいデプロイ」→ ウェブアプリ → 自分として実行 → 全員がアクセス可
  */
 
 // === Sheet Names ===
 var SHEET_TRANSACTIONS = "取引";
 
-// === GET Handler ===
+// === GET Handler (すべてのリクエストをGETで処理) ===
 function doGet(e) {
   var action = e.parameter.action;
 
   try {
+    if (action === "addTransaction") {
+      return jsonResponse(addTransaction(e.parameter));
+    }
     if (action === "getTransactions") {
       return jsonResponse(getTransactions(e.parameter.month));
     }
     if (action === "ping") {
       return jsonResponse({ status: "ok" });
     }
-    return jsonResponse({ error: "Unknown action" });
+    return jsonResponse({ error: "Unknown action: " + action });
   } catch (err) {
     return jsonResponse({ error: err.message });
   }
 }
 
-// === POST Handler ===
+// === POST Handler (フォールバック) ===
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);
@@ -58,7 +59,7 @@ function addTransaction(data) {
   sheet.appendRow([
     id,
     data.date,
-    data.amount,
+    Number(data.amount),
     data.type,
     data.category,
     data.user,

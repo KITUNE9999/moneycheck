@@ -303,7 +303,7 @@ function initForm() {
     submitBtn.textContent = "送信中...";
 
     try {
-      await postToGAS("addTransaction", data);
+      await callGAS("addTransaction", data);
       showFeedback("記録しました！", "success");
       form.reset();
       $("#input-date").value = formatDateForInput(new Date());
@@ -364,7 +364,7 @@ async function loadSummary() {
 
   try {
     showLoading(true);
-    const data = await getFromGAS("getTransactions", { month: monthStr });
+    const data = await callGAS("getTransactions", { month: monthStr });
 
     if (!data || !data.transactions) {
       renderEmptySummary();
@@ -469,33 +469,29 @@ function renderEmptySummary() {
   $("#transaction-list").innerHTML = '<p class="empty-state">データがありません</p>';
 }
 
-// === API Communication ===
-async function postToGAS(action, data) {
+// === API Communication (すべてGETで送信) ===
+async function callGAS(action, params = {}) {
   if (!CONFIG.GAS_URL) {
-    // Offline fallback: save to localStorage
-    saveOffline({ action, ...data });
-    return { success: true, offline: true };
-  }
-
-  const res = await fetch(CONFIG.GAS_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify({ action, ...data }),
-  });
-  return res.json();
-}
-
-async function getFromGAS(action, params = {}) {
-  if (!CONFIG.GAS_URL) {
+    if (action === "addTransaction") {
+      saveOffline({ action, ...params });
+      return { success: true, offline: true };
+    }
     return getOfflineData(action, params);
   }
 
   const url = new URL(CONFIG.GAS_URL);
   url.searchParams.set("action", action);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
+  });
 
   const res = await fetch(url.toString());
-  return res.json();
+  const result = await res.json();
+
+  if (result.error) {
+    throw new Error(result.error);
+  }
+  return result;
 }
 
 // === Offline Storage ===
