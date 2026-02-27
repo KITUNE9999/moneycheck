@@ -6,6 +6,8 @@
 ## Completed
 - [x] Interview conducted / product-vision.md generated
 - [x] Project setup (CLAUDE.md, agents, skills configured)
+- [x] GitHub repo connected, branch structure created (main / develop)
+- [x] Tech stack確定 — HTML + Google Apps Script + GitHub Pages
 
 ## Next Actions
 
@@ -26,13 +28,14 @@
 ## Handoff Notes
 
 ### Last Session Summary
-- Session: 初回セットアップ
-- Task: プロジェクトインタビュー & セットアップ
+- Session: #1 初回セットアップ
+- Task: インタビュー → プロジェクト設定 → GitHub連携 → Tech Stack確定
 - Status: 完了
 
 ### For Next Session
-- オーナーがGoogle Spreadsheetを作成した後、開発開始
-- HTML/CSS/JSでフロントエンド作成 → Google Apps ScriptでAPI作成
+- 次タスク: HTML/CSS/JSでフロントエンド作成（入力フォーム + 月別サマリー画面）
+- オーナーにGoogle Spreadsheet作成を依頼済み（スプレッドシートURLが必要）
+- Apps Scriptのコードも同セッションで作成可能
 
 ### Important Context
 - 二人専用の家計簿アプリ（収益化なし）
