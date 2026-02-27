@@ -12,7 +12,7 @@ const CONFIG = {
 // === State ===
 const state = {
   currentUser: null, // { index: 0|1, name: "..." }
-  users: [],
+  users: [{ name: "としひこ" }, { name: "あつこ" }],
   categories: {
     expense: ["食費", "家賃", "光熱費", "通信費", "交通費", "日用品", "娯楽", "医療", "衣服", "その他"],
     income: ["給与", "副収入", "その他"],
@@ -54,70 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadConfig() {
-  // Load users from localStorage or use defaults
-  const saved = localStorage.getItem("moneycheck_config");
-  if (saved) {
-    const config = JSON.parse(saved);
-    state.users = config.users || [];
-  }
-
-  if (state.users.length === 0) {
-    // First time setup - prompt for names
-    showSetup();
-  } else {
-    renderLoginButtons();
-  }
-}
-
-// === Setup (First Time) ===
-function showSetup() {
-  const container = $(".login-container");
-  container.innerHTML = `
-    <h1 class="app-title">MoneyCheck</h1>
-    <p class="app-subtitle">初回セットアップ</p>
-    <div class="card" style="width:100%;max-width:320px;">
-      <div class="form-group">
-        <label>ユーザー1 の名前</label>
-        <input type="text" id="setup-user0" placeholder="例: たろう">
-      </div>
-      <div class="form-group">
-        <label>ユーザー2 の名前</label>
-        <input type="text" id="setup-user1" placeholder="例: はなこ">
-      </div>
-      <button id="setup-submit" class="btn btn-primary btn-large">はじめる</button>
-    </div>
-  `;
-
-  $("#setup-submit").addEventListener("click", () => {
-    const name0 = $("#setup-user0").value.trim();
-    const name1 = $("#setup-user1").value.trim();
-
-    if (!name0 || !name1) {
-      alert("ふたりの名前を入力してください");
-      return;
-    }
-
-    state.users = [
-      { name: name0 },
-      { name: name1 },
-    ];
-
-    localStorage.setItem("moneycheck_config", JSON.stringify({
-      users: state.users,
-    }));
-
-    // Re-render login screen
-    container.innerHTML = `
-      <h1 class="app-title">MoneyCheck</h1>
-      <p class="app-subtitle">ふたりの家計簿</p>
-      <p class="login-prompt">あなたはどっち？</p>
-      <div class="login-buttons">
-        <button class="login-btn" data-user="0" id="btn-user0"></button>
-        <button class="login-btn" data-user="1" id="btn-user1"></button>
-      </div>
-    `;
-    renderLoginButtons();
-  });
+  renderLoginButtons();
 }
 
 // === Login ===
