@@ -11,19 +11,17 @@
 
 ### Owner tasks
 - [x] Create private GitHub repository "moneycheck"
-- [ ] Create Google Cloud project and enable Sheets API (free)
-- [ ] Create service account and share key JSON
-- [ ] Create Google Spreadsheet and share with service account
+- [ ] Create Google Spreadsheet
 
-### Claude Code tasks (after owner tasks complete)
-- [ ] Clone repository and initialize branch structure (develop / feature)
-- [ ] Initialize Next.js project with Tailwind CSS
+### Claude Code tasks
+- [x] Initialize branch structure (main / develop)
+- [ ] Create HTML/CSS/JS フロントエンド
+- [ ] Create Google Apps Script (バックエンド API)
 - [ ] Configure PWA (manifest.json, Service Worker)
-- [ ] Set up Google Sheets API connection
-- [ ] Design spreadsheet structure (sheets: transactions, categories, users)
 - [ ] Implement simple password auth (2 users)
 - [ ] Implement basic input form
-- [ ] Implement monthly summary view
+- [ ] Implement monthly summary view (個人別・合算・カテゴリ別)
+- [ ] Deploy to GitHub Pages
 
 ## Handoff Notes
 
@@ -33,8 +31,8 @@
 - Status: 完了
 
 ### For Next Session
-- オーナーがGitHubリポジトリとGoogle Sheets APIのセットアップを完了した後、開発開始
-- まずNext.jsプロジェクトの初期化から着手
+- オーナーがGoogle Spreadsheetを作成した後、開発開始
+- HTML/CSS/JSでフロントエンド作成 → Google Apps ScriptでAPI作成
 
 ### Important Context
 - 二人専用の家計簿アプリ（収益化なし）
@@ -46,11 +44,14 @@
 - 2026-02-27: Project launched, interview complete
 - 2026-02-27: Core value confirmed — "簡単入力・見える化・二人で共有"
 - 2026-02-27: Primary target confirmed — "同居を始めた共働き夫婦（二人専用）"
-- 2026-02-27: Tech stack confirmed — Next.js + Google Sheets + Vercel (PWA)
+- 2026-02-27: Tech stack変更 — HTML + Google Apps Script + GitHub Pages (PWA)
+- 2026-02-27: 方針変更 — Next.js/Vercel/サービスアカウント不要のシンプル構成に
 - 2026-02-27: Monetization — なし（個人利用）
 - 2026-02-27: UI方針 — review.md デフォルト（温かみ重視）を適用
 
 ## Notes
-- 全機能を完全無料で運用（Google Sheets API + Vercel Free）
+- 完全無料で運用（Google Spreadsheet + Apps Script + GitHub Pages）
+- ビルドツール不要（HTML + CSS + vanilla JS）
+- Google Apps Script はスプレッドシートの「拡張機能」から直接編集
 - デフォルトカテゴリはスプレッドシートの初期データとして設定
-- データはGoogle Spreadsheetで直接確認・編集も可能
+- データはスプレッドシートで直接確認・編集も可能

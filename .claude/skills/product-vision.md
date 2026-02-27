@@ -61,10 +61,11 @@
 ## SaaS Dependency Map
 | Service | Purpose | Free tier limit | Monthly cost at scale | Alternative |
 |---------|---------|----------------|----------------------|-------------|
-| Google Sheets API | DB (データ保存) | 無制限（API 300req/min） | 無料 | Supabase free tier |
-| Vercel | Hosting | 100GB bandwidth | $20/mo (Pro) | Cloudflare Pages (free) |
+| Google Spreadsheet | DB (データ保存) | 無料 | 無料 | — |
+| Google Apps Script | API (バックエンド) | 6分/実行, 90分/日 | 無料 | — |
+| GitHub Pages | Hosting (フロントエンド) | 100GB/月, 1GB容量 | 無料 | — |
 
-**2人利用の場合、完全無料で運用可能。データはスプレッドシートで直接確認も可。**
+**完全無料。外部SaaS依存ゼロ。データはスプレッドシートで直接確認・編集も可能。**
 
 ## Roles
 | Role | Person |

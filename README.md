@@ -11,11 +11,11 @@ MoneyCheckは、一緒に暮らす二人のための家計簿アプリです。
 
 | Layer | Technology |
 |-------|-----------|
-| BE | Next.js API Routes |
-| FE | Next.js + Tailwind CSS |
-| DB | Google Spreadsheets (Sheets API) |
+| FE | HTML + CSS + vanilla JS |
+| BE | Google Apps Script |
+| DB | Google Spreadsheet |
 | Auth | シンプルパスワード認証 |
-| Host | Vercel |
+| Host | GitHub Pages |
 | Mobile | PWA |
 
 ## Getting Started

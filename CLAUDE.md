@@ -6,11 +6,11 @@
 ## Stack
 | Layer | Tech |
 |-------|------|
-| BE | Next.js API Routes |
-| FE | Next.js + Tailwind CSS |
+| FE | HTML + CSS + vanilla JS |
+| BE | Google Apps Script |
+| DB | Google Spreadsheet |
+| Host | GitHub Pages |
 | Mobile | PWA |
-| DB | Google Spreadsheets (Sheets API) |
-| Host | Vercel |
 | Dev | Antigravity + Claude Code CLI |
 
 ## Session Start (run at the beginning of every session)
