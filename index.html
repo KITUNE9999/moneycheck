@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoneyCheck</title>
+  <meta name="description" content="夫婦で使えるシンプル家計簿">
+  <meta name="theme-color" content="#E8DDD3">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="MoneyCheck">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="screen">
+    <div class="login-container">
+      <h1 class="app-title">MoneyCheck</h1>
+      <p class="app-subtitle">ふたりの家計簿</p>
+      <div class="login-buttons">
+        <button class="login-btn" data-user="0" id="btn-user0"></button>
+        <button class="login-btn" data-user="1" id="btn-user1"></button>
+      </div>
+      <div id="pin-area" class="pin-area hidden">
+        <p id="pin-label"></p>
+        <input type="password" id="pin-input" maxlength="4" placeholder="4桁のPIN" inputmode="numeric" autocomplete="off">
+        <button id="pin-submit" class="btn btn-primary">ログイン</button>
+        <p id="pin-error" class="error-text hidden">PINが違います</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app-screen" class="screen hidden">
+    <!-- Header -->
+    <header class="app-header">
+      <h1 class="header-title">MoneyCheck</h1>
+      <button id="btn-logout" class="btn-icon" title="ログアウト">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab active" data-tab="input">入力</button>
+      <button class="tab" data-tab="summary">収支</button>
+    </nav>
+
+    <!-- Input Tab -->
+    <main id="tab-input" class="tab-content active">
+      <form id="expense-form" class="card">
+        <div class="form-group">
+          <label for="input-amount">金額</label>
+          <div class="amount-input-wrap">
+            <span class="currency-symbol">&yen;</span>
+            <input type="number" id="input-amount" inputmode="numeric" placeholder="0" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>種別</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle active" data-type="expense">支出</button>
+            <button type="button" class="toggle" data-type="income">収入</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-category">カテゴリ</label>
+          <select id="input-category" required>
+            <option value="">選択してください</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="input-date">日付</label>
+          <input type="date" id="input-date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="input-memo">メモ（任意）</label>
+          <input type="text" id="input-memo" placeholder="例: スーパーで買い物">
+        </div>
+
+        <button type="submit" id="btn-submit" class="btn btn-primary btn-large">記録する</button>
+      </form>
+
+      <div id="submit-feedback" class="feedback hidden"></div>
+    </main>
+
+    <!-- Summary Tab -->
+    <main id="tab-summary" class="tab-content">
+      <div class="month-selector card">
+        <button id="btn-prev-month" class="btn-icon">&lt;</button>
+        <span id="current-month"></span>
+        <button id="btn-next-month" class="btn-icon">&gt;</button>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards">
+        <div class="card summary-card">
+          <p class="summary-label">合算</p>
+          <p id="summary-total-income" class="summary-value income">+&yen;0</p>
+          <p id="summary-total-expense" class="summary-value expense">-&yen;0</p>
+          <hr class="summary-divider">
+          <p id="summary-total-balance" class="summary-balance">&yen;0</p>
+        </div>
+        <div class="summary-pair">
+          <div class="card summary-card small">
+            <p class="summary-label" id="summary-user0-name"></p>
+            <p id="summary-user0-income" class="summary-value income small">+&yen;0</p>
+            <p id="summary-user0-expense" class="summary-value expense small">-&yen;0</p>
+          </div>
+          <div class="card summary-card small">
+            <p class="summary-label" id="summary-user1-name"></p>
+            <p id="summary-user1-income" class="summary-value income small">+&yen;0</p>
+            <p id="summary-user1-expense" class="summary-value expense small">-&yen;0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="card" id="category-breakdown">
+        <h3 class="section-title">カテゴリ別支出</h3>
+        <div id="category-list"></div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card" id="recent-transactions">
+        <h3 class="section-title">明細</h3>
+        <div id="transaction-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading" class="loading-overlay hidden">
+    <div class="spinner"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+</html>

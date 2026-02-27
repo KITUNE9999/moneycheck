@@ -13,35 +13,38 @@
 
 ### Owner tasks
 - [x] Create private GitHub repository "moneycheck"
-- [ ] Create Google Spreadsheet
+- [x] Create Google Spreadsheet
+  - URL: https://docs.google.com/spreadsheets/d/1IXI2vTmp8AvGQj_iP2cQjaD2Ra-u6zlgLSYOrP7XMzw/edit
 
 ### Claude Code tasks
 - [x] Initialize branch structure (main / develop)
-- [ ] Create HTML/CSS/JS フロントエンド
-- [ ] Create Google Apps Script (バックエンド API)
-- [ ] Configure PWA (manifest.json, Service Worker)
-- [ ] Implement simple password auth (2 users)
-- [ ] Implement basic input form
-- [ ] Implement monthly summary view (個人別・合算・カテゴリ別)
+- [x] Create HTML/CSS/JS フロントエンド
+- [x] Create Google Apps Script (バックエンド API)
+- [x] Configure PWA (manifest.json, Service Worker)
+- [x] Implement simple password auth (PIN認証, 2 users)
+- [x] Implement basic input form
+- [x] Implement monthly summary view (個人別・合算・カテゴリ別)
 - [ ] Deploy to GitHub Pages
+- [ ] Apps Script デプロイ & 動作確認
 
 ## Handoff Notes
 
 ### Last Session Summary
-- Session: #1 初回セットアップ
-- Task: インタビュー → プロジェクト設定 → GitHub連携 → Tech Stack確定
-- Status: 完了
+- Session: #2 MVP実装
+- Task: HTML/CSS/JS + Google Apps Script でMVP作成
+- Status: 実装完了、デプロイ待ち
 
 ### For Next Session
-- 次タスク: HTML/CSS/JSでフロントエンド作成（入力フォーム + 月別サマリー画面）
-- オーナーにGoogle Spreadsheet作成を依頼済み（スプレッドシートURLが必要）
-- Apps Scriptのコードも同セッションで作成可能
+- GitHub Pagesへのデプロイ
+- オーナーがApps Scriptをスプレッドシートに貼り付け → デプロイ
+- 動作確認 & 微調整
 
 ### Important Context
 - 二人専用の家計簿アプリ（収益化なし）
 - PWA（スマホ＋PC両対応）
 - 温かみのあるUIデザイン
 - カテゴリ: 食費・家賃・光熱費・通信費・交通費・日用品・娯楽・医療・衣服・その他
+- Spreadsheet ID: 1IXI2vTmp8AvGQj_iP2cQjaD2Ra-u6zlgLSYOrP7XMzw
 
 ## Decision Log
 - 2026-02-27: Project launched, interview complete
