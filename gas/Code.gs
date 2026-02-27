@@ -20,6 +20,9 @@ function doGet(e) {
     if (action === "addTransaction") {
       return jsonResponse(addTransaction(e.parameter));
     }
+    if (action === "deleteTransaction") {
+      return jsonResponse(deleteTransaction(e.parameter.id));
+    }
     if (action === "getTransactions") {
       return jsonResponse(getTransactions(e.parameter.month));
     }
@@ -67,6 +70,27 @@ function addTransaction(data) {
   ]);
 
   return { success: true, id: id };
+}
+
+/**
+ * 取引を削除
+ * @param {string} id - Transaction ID
+ */
+function deleteTransaction(id) {
+  var sheet = getSheet(SHEET_TRANSACTIONS);
+  if (!sheet) {
+    return { error: "Sheet not found" };
+  }
+
+  var data = sheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(id)) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+
+  return { error: "Transaction not found" };
 }
 
 /**

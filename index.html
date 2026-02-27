@@ -42,6 +42,7 @@
     <nav class="tab-nav">
       <button class="tab active" data-tab="input">入力</button>
       <button class="tab" data-tab="summary">収支</button>
+      <button class="tab" data-tab="history">一覧</button>
     </nav>
 
     <!-- Input Tab -->
@@ -163,10 +164,32 @@
         <div id="category-list"></div>
       </div>
 
-      <!-- Recent Transactions -->
-      <div class="card" id="recent-transactions">
-        <h3 class="section-title">明細</h3>
-        <div id="transaction-list"></div>
+    </main>
+
+    <!-- History Tab -->
+    <main id="tab-history" class="tab-content">
+      <div class="month-selector card">
+        <button id="btn-prev-month-h" class="btn-icon">&lt;</button>
+        <span id="current-month-h"></span>
+        <button id="btn-next-month-h" class="btn-icon">&gt;</button>
+      </div>
+
+      <div class="card">
+        <div id="history-table-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>カテゴリ</th>
+                <th>金額</th>
+                <th>誰</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+        <p id="history-empty" class="empty-state hidden">データがありません</p>
       </div>
     </main>
   </div>

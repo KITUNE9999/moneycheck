@@ -18,6 +18,7 @@ const state = {
     income: ["給与", "副収入", "その他"],
   },
   currentMonth: new Date(),
+  historyMonth: new Date(),
   transactionType: "expense",
 };
 
@@ -49,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTemplates();
   initForm();
   initMonthSelector();
+  initHistoryMonth();
   initLogout();
   loadConfig();
 });
@@ -109,6 +111,9 @@ function initTabs() {
 
       if (tab.dataset.tab === "summary") {
         loadSummary();
+      }
+      if (tab.dataset.tab === "history") {
+        loadHistory();
       }
     });
   });
@@ -434,25 +439,6 @@ function renderSummary(transactions) {
     `).join("");
   }
 
-  // Transaction list (sorted by date desc)
-  const txList = $("#transaction-list");
-  const sortedTx = [...transactions].sort((a, b) => b.date.localeCompare(a.date));
-
-  if (sortedTx.length === 0) {
-    txList.innerHTML = '<p class="empty-state">データがありません</p>';
-  } else {
-    txList.innerHTML = sortedTx.map((t) => `
-      <div class="transaction-row">
-        <div class="transaction-info">
-          <span class="transaction-category">${escapeHtml(t.category)}</span>
-          <span class="transaction-meta">${t.date} / ${escapeHtml(t.user)}${t.memo ? " / " + escapeHtml(t.memo) : ""}</span>
-        </div>
-        <span class="transaction-amount ${t.type}">
-          ${t.type === "income" ? "+" : "-"}\u00A5${fmt(parseInt(t.amount))}
-        </span>
-      </div>
-    `).join("");
-  }
 }
 
 function renderEmptySummary() {
@@ -466,7 +452,90 @@ function renderEmptySummary() {
   $("#summary-user1-income").textContent = `+${fmt()}`;
   $("#summary-user1-expense").textContent = `-${fmt()}`;
   $("#category-list").innerHTML = '<p class="empty-state">データがありません</p>';
-  $("#transaction-list").innerHTML = '<p class="empty-state">データがありません</p>';
+}
+
+// === History Tab ===
+function initHistoryMonth() {
+  const btnPrev = $("#btn-prev-month-h");
+  const btnNext = $("#btn-next-month-h");
+
+  if (btnPrev) {
+    btnPrev.addEventListener("click", () => {
+      state.historyMonth.setMonth(state.historyMonth.getMonth() - 1);
+      loadHistory();
+    });
+  }
+  if (btnNext) {
+    btnNext.addEventListener("click", () => {
+      state.historyMonth.setMonth(state.historyMonth.getMonth() + 1);
+      loadHistory();
+    });
+  }
+}
+
+async function loadHistory() {
+  if (!state.historyMonth) state.historyMonth = new Date();
+  const monthStr = formatMonth(state.historyMonth);
+  $("#current-month-h").textContent = formatMonthDisplay(state.historyMonth);
+
+  try {
+    showLoading(true);
+    const data = await callGAS("getTransactions", { month: monthStr });
+    const transactions = (data && data.transactions) || [];
+    renderHistory(transactions);
+  } catch (err) {
+    console.error("Failed to load history:", err);
+    renderHistory([]);
+  } finally {
+    showLoading(false);
+  }
+}
+
+function renderHistory(transactions) {
+  const body = $("#history-body");
+  const empty = $("#history-empty");
+  const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date));
+
+  if (sorted.length === 0) {
+    body.innerHTML = "";
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+  const fmt = (n) => parseInt(n).toLocaleString();
+
+  body.innerHTML = sorted.map((t) => `
+    <tr>
+      <td>${escapeHtml(t.date.substring(5))}</td>
+      <td>
+        ${escapeHtml(t.category)}
+        ${t.memo ? '<span class="memo-text">' + escapeHtml(t.memo) + '</span>' : ""}
+      </td>
+      <td class="amount-cell ${t.type}">
+        ${t.type === "income" ? "+" : "-"}\u00A5${fmt(t.amount)}
+      </td>
+      <td>${escapeHtml(t.user)}</td>
+      <td><button class="btn-delete" data-id="${escapeHtml(t.id)}">削除</button></td>
+    </tr>
+  `).join("");
+
+  // Bind delete buttons
+  body.querySelectorAll(".btn-delete").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("この記録を削除しますか？")) return;
+      btn.disabled = true;
+      btn.textContent = "...";
+      try {
+        await callGAS("deleteTransaction", { id: btn.dataset.id });
+        loadHistory();
+      } catch (err) {
+        alert("削除に失敗しました");
+        btn.disabled = false;
+        btn.textContent = "削除";
+      }
+    });
+  });
 }
 
 // === API Communication (すべてGETで送信) ===
