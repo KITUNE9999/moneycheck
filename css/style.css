@@ -241,6 +241,35 @@ body {
   margin-bottom: 16px;
 }
 
+/* === Section Header === */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: var(--font);
+  transition: background 0.2s;
+}
+
+.btn-text:hover {
+  background: rgba(196, 123, 90, 0.1);
+}
+
 /* === Templates === */
 .template-list {
   display: flex;
@@ -275,6 +304,83 @@ body {
 
 .template-emoji {
   font-size: 15px;
+}
+
+.template-btn .delete-badge {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--expense);
+  color: #FFF;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+  margin-left: 2px;
+}
+
+.template-list.editing .template-btn .delete-badge {
+  display: inline-block;
+}
+
+.template-list.editing .template-btn {
+  border-color: var(--expense);
+  opacity: 0.85;
+}
+
+.template-btn.add-btn {
+  border-style: dashed;
+  color: var(--text-light);
+}
+
+.template-btn.add-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* === Modal === */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(61, 50, 41, 0.4);
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  z-index: 1;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+}
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text-light);
+  border: 1.5px solid var(--border);
+  padding: 12px 24px;
+}
+
+.btn-secondary:hover {
+  background: var(--border);
 }
 
 /* === Form === */

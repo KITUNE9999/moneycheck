@@ -48,8 +48,42 @@
     <main id="tab-input" class="tab-content active">
       <!-- Quick Templates -->
       <div class="card" id="templates-card">
-        <p class="section-title">よく使う</p>
+        <div class="section-header">
+          <p class="section-title">よく使う</p>
+          <button type="button" id="btn-edit-templates" class="btn-text">編集</button>
+        </div>
         <div id="template-list" class="template-list"></div>
+      </div>
+
+      <!-- Template Add Modal -->
+      <div id="template-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content card">
+          <h3 class="section-title">テンプレート追加</h3>
+          <div class="form-group">
+            <label for="tpl-label">名前</label>
+            <input type="text" id="tpl-label" placeholder="例: コンビニ">
+          </div>
+          <div class="form-group">
+            <label for="tpl-category">カテゴリ</label>
+            <select id="tpl-category"></select>
+          </div>
+          <div class="form-group">
+            <label for="tpl-memo">メモ</label>
+            <input type="text" id="tpl-memo" placeholder="例: コンビニで買い物">
+          </div>
+          <div class="form-group">
+            <label>種別</label>
+            <div class="toggle-group">
+              <button type="button" class="toggle tpl-toggle active" data-type="expense">支出</button>
+              <button type="button" class="toggle tpl-toggle" data-type="income">収入</button>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" id="btn-tpl-cancel" class="btn btn-secondary">キャンセル</button>
+            <button type="button" id="btn-tpl-save" class="btn btn-primary">追加</button>
+          </div>
+        </div>
       </div>
 
       <form id="expense-form" class="card">

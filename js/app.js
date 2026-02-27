@@ -26,19 +26,19 @@ const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
 // === Templates ===
-const TEMPLATES = [
-  { emoji: "\uD83D\uDED2", label: "スーパー", category: "食費", memo: "スーパーで買い物" },
-  { emoji: "\uD83C\uDF5A", label: "外食", category: "食費", memo: "外食" },
-  { emoji: "\uD83C\uDFE0", label: "家賃", category: "家賃", memo: "家賃" },
-  { emoji: "\u26A1", label: "電気", category: "光熱費", memo: "電気代" },
-  { emoji: "\uD83D\uDCA7", label: "水道", category: "光熱費", memo: "水道代" },
-  { emoji: "\uD83D\uDD25", label: "ガス", category: "光熱費", memo: "ガス代" },
-  { emoji: "\uD83D\uDCF1", label: "スマホ", category: "通信費", memo: "スマホ代" },
-  { emoji: "\uD83D\uDE83", label: "電車", category: "交通費", memo: "電車" },
-  { emoji: "\uD83E\uDDF4", label: "日用品", category: "日用品", memo: "日用品" },
-  { emoji: "\uD83C\uDFAC", label: "娯楽", category: "娯楽", memo: "" },
-  { emoji: "\uD83C\uDFE5", label: "病院", category: "医療", memo: "病院" },
-  { emoji: "\uD83D\uDCB0", label: "給与", category: "給与", memo: "給与", type: "income" },
+const DEFAULT_TEMPLATES = [
+  { label: "スーパー", category: "食費", memo: "スーパーで買い物" },
+  { label: "外食", category: "食費", memo: "外食" },
+  { label: "家賃", category: "家賃", memo: "家賃" },
+  { label: "電気", category: "光熱費", memo: "電気代" },
+  { label: "水道", category: "光熱費", memo: "水道代" },
+  { label: "ガス", category: "光熱費", memo: "ガス代" },
+  { label: "スマホ", category: "通信費", memo: "スマホ代" },
+  { label: "電車", category: "交通費", memo: "電車" },
+  { label: "日用品", category: "日用品", memo: "日用品" },
+  { label: "娯楽", category: "娯楽", memo: "" },
+  { label: "病院", category: "医療", memo: "病院" },
+  { label: "給与", category: "給与", memo: "給与", type: "income" },
 ];
 
 // === Initialization ===
@@ -203,37 +203,137 @@ function updateCategories() {
 }
 
 // === Templates ===
+function getTemplates() {
+  const saved = localStorage.getItem("moneycheck_templates");
+  if (saved) return JSON.parse(saved);
+  return [...DEFAULT_TEMPLATES];
+}
+
+function saveTemplates(templates) {
+  localStorage.setItem("moneycheck_templates", JSON.stringify(templates));
+}
+
 function initTemplates() {
+  renderTemplates();
+  initTemplateEdit();
+  initTemplateModal();
+}
+
+function renderTemplates() {
   const list = $("#template-list");
   if (!list) return;
 
-  list.innerHTML = TEMPLATES.map((t, i) => `
+  const templates = getTemplates();
+  const isEditing = list.classList.contains("editing");
+
+  list.innerHTML = templates.map((t, i) => `
     <button type="button" class="template-btn" data-index="${i}">
-      <span class="template-emoji">${t.emoji}</span>${t.label}
+      ${escapeHtml(t.label)}${isEditing ? '<span class="delete-badge">\u00D7</span>' : ""}
     </button>
-  `).join("");
+  `).join("") + (isEditing ? `
+    <button type="button" class="template-btn add-btn" id="btn-add-template">＋ 追加</button>
+  ` : "");
 
-  list.addEventListener("click", (e) => {
-    const btn = e.target.closest(".template-btn");
-    if (!btn) return;
+  // Re-bind click events
+  list.querySelectorAll(".template-btn:not(.add-btn)").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = parseInt(btn.dataset.index);
+      const t = getTemplates()[idx];
 
-    const t = TEMPLATES[parseInt(btn.dataset.index)];
-    const type = t.type || "expense";
+      if (isEditing) {
+        // Delete mode
+        const templates = getTemplates();
+        templates.splice(idx, 1);
+        saveTemplates(templates);
+        renderTemplates();
+        return;
+      }
 
-    // Set type toggle
-    state.transactionType = type;
-    $$(".toggle").forEach((tog) => {
-      tog.classList.toggle("active", tog.dataset.type === type);
+      const type = t.type || "expense";
+      state.transactionType = type;
+      $$(".toggle").forEach((tog) => {
+        tog.classList.toggle("active", tog.dataset.type === type);
+      });
+      updateCategories();
+      $("#input-category").value = t.category;
+      $("#input-memo").value = t.memo;
+      $("#input-amount").focus();
     });
-    updateCategories();
-
-    // Fill fields
-    $("#input-category").value = t.category;
-    $("#input-memo").value = t.memo;
-
-    // Focus amount
-    $("#input-amount").focus();
   });
+
+  const addBtn = list.querySelector("#btn-add-template");
+  if (addBtn) {
+    addBtn.addEventListener("click", () => openTemplateModal());
+  }
+}
+
+function initTemplateEdit() {
+  const editBtn = $("#btn-edit-templates");
+  if (!editBtn) return;
+
+  editBtn.addEventListener("click", () => {
+    const list = $("#template-list");
+    const isEditing = list.classList.toggle("editing");
+    editBtn.textContent = isEditing ? "完了" : "編集";
+    renderTemplates();
+  });
+}
+
+function initTemplateModal() {
+  const modal = $("#template-modal");
+  if (!modal) return;
+
+  // Toggle for modal
+  $$(".tpl-toggle").forEach((tog) => {
+    tog.addEventListener("click", () => {
+      $$(".tpl-toggle").forEach((t) => t.classList.remove("active"));
+      tog.classList.add("active");
+      fillModalCategories(tog.dataset.type);
+    });
+  });
+
+  $("#btn-tpl-cancel").addEventListener("click", closeTemplateModal);
+  modal.querySelector(".modal-backdrop").addEventListener("click", closeTemplateModal);
+
+  $("#btn-tpl-save").addEventListener("click", () => {
+    const label = $("#tpl-label").value.trim();
+    const category = $("#tpl-category").value;
+    const memo = $("#tpl-memo").value.trim();
+    const type = modal.querySelector(".tpl-toggle.active").dataset.type;
+
+    if (!label || !category) {
+      alert("名前とカテゴリを入力してください");
+      return;
+    }
+
+    const templates = getTemplates();
+    templates.push({ label, category, memo, type: type === "income" ? "income" : undefined });
+    saveTemplates(templates);
+    closeTemplateModal();
+    renderTemplates();
+  });
+}
+
+function openTemplateModal() {
+  const modal = $("#template-modal");
+  modal.classList.remove("hidden");
+  $("#tpl-label").value = "";
+  $("#tpl-memo").value = "";
+  $$(".tpl-toggle").forEach((t) => {
+    t.classList.toggle("active", t.dataset.type === "expense");
+  });
+  fillModalCategories("expense");
+  $("#tpl-label").focus();
+}
+
+function fillModalCategories(type) {
+  const select = $("#tpl-category");
+  const cats = state.categories[type] || [];
+  select.innerHTML = cats.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+}
+
+function closeTemplateModal() {
+  $("#template-modal").classList.add("hidden");
 }
 
 // === Form Submit ===
