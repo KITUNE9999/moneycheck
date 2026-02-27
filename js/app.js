@@ -310,6 +310,7 @@ function initForm() {
 
     try {
       await callGAS("addTransaction", data);
+      clearCache(date.substring(0, 7));
       showFeedback("記録しました！", "success");
       form.reset();
       $("#input-date").value = formatDateForInput(new Date());
@@ -360,7 +361,6 @@ async function loadSummary() {
   const monthStr = formatMonth(state.currentMonth);
   $("#current-month").textContent = formatMonthDisplay(state.currentMonth);
 
-  // Set user names
   if (state.users[0]) {
     $("#summary-user0-name").textContent = state.users[0].name;
   }
@@ -368,19 +368,26 @@ async function loadSummary() {
     $("#summary-user1-name").textContent = state.users[1].name;
   }
 
+  // Show cache immediately
+  const cached = loadCache(monthStr);
+  if (cached && cached.transactions) {
+    renderSummary(cached.transactions);
+  }
+
+  // Fetch fresh data in background
   try {
-    showLoading(true);
+    if (!cached) showLoading(true);
     const data = await callGAS("getTransactions", { month: monthStr });
 
     if (!data || !data.transactions) {
-      renderEmptySummary();
+      if (!cached) renderEmptySummary();
       return;
     }
 
     renderSummary(data.transactions);
   } catch (err) {
     console.error("Failed to load summary:", err);
-    renderEmptySummary();
+    if (!cached) renderEmptySummary();
   } finally {
     showLoading(false);
   }
@@ -479,14 +486,21 @@ async function loadHistory() {
   const monthStr = formatMonth(state.historyMonth);
   $("#current-month-h").textContent = formatMonthDisplay(state.historyMonth);
 
+  // Show cache immediately
+  const cached = loadCache(monthStr);
+  if (cached && cached.transactions) {
+    renderHistory(cached.transactions);
+  }
+
+  // Fetch fresh data in background
   try {
-    showLoading(true);
+    if (!cached) showLoading(true);
     const data = await callGAS("getTransactions", { month: monthStr });
     const transactions = (data && data.transactions) || [];
     renderHistory(transactions);
   } catch (err) {
     console.error("Failed to load history:", err);
-    renderHistory([]);
+    if (!cached) renderHistory([]);
   } finally {
     showLoading(false);
   }
@@ -601,6 +615,7 @@ function initEditModal() {
 
     try {
       await callGAS("updateTransaction", { id, date, amount, type, category, user, memo });
+      clearCache(formatMonth(state.historyMonth));
       closeEditModal();
       loadHistory();
     } catch (err) {
@@ -621,6 +636,7 @@ function initEditModal() {
 
     try {
       await callGAS("deleteTransaction", { id });
+      clearCache(formatMonth(state.historyMonth));
       closeEditModal();
       loadHistory();
     } catch (err) {
@@ -654,7 +670,41 @@ async function callGAS(action, params = {}) {
   if (result.error) {
     throw new Error(result.error);
   }
+
+  // Save to cache for getTransactions
+  if (action === "getTransactions" && params.month) {
+    saveCache(params.month, result);
+  }
+
   return result;
+}
+
+// === Cache ===
+function getCacheKey(month) {
+  return "moneycheck_cache_" + month;
+}
+
+function saveCache(month, data) {
+  try {
+    localStorage.setItem(getCacheKey(month), JSON.stringify({
+      data: data,
+      time: Date.now(),
+    }));
+  } catch (e) { /* localStorage full, ignore */ }
+}
+
+function loadCache(month) {
+  try {
+    const raw = localStorage.getItem(getCacheKey(month));
+    if (!raw) return null;
+    return JSON.parse(raw).data;
+  } catch (e) {
+    return null;
+  }
+}
+
+function clearCache(month) {
+  localStorage.removeItem(getCacheKey(month));
 }
 
 // === Offline Storage ===
@@ -668,7 +718,7 @@ function saveOffline(data) {
 function getOfflineData(action, params) {
   if (action === "getTransactions") {
     const all = JSON.parse(localStorage.getItem("moneycheck_offline") || "[]");
-    const month = params.month; // "YYYY-MM"
+    const month = params.month;
     const filtered = all
       .filter((t) => t.action === "addTransaction" && t.date && t.date.startsWith(month));
     return { transactions: filtered };
