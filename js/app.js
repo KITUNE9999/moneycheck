@@ -69,16 +69,8 @@ function showSetup() {
         <input type="text" id="setup-user0" placeholder="例: たろう">
       </div>
       <div class="form-group">
-        <label>ユーザー1 のPIN（4桁）</label>
-        <input type="password" id="setup-pin0" maxlength="4" inputmode="numeric" placeholder="1234">
-      </div>
-      <div class="form-group">
         <label>ユーザー2 の名前</label>
         <input type="text" id="setup-user1" placeholder="例: はなこ">
-      </div>
-      <div class="form-group">
-        <label>ユーザー2 のPIN（4桁）</label>
-        <input type="password" id="setup-pin1" maxlength="4" inputmode="numeric" placeholder="5678">
       </div>
       <button id="setup-submit" class="btn btn-primary btn-large">はじめる</button>
     </div>
@@ -87,18 +79,16 @@ function showSetup() {
   $("#setup-submit").addEventListener("click", () => {
     const gasUrl = $("#setup-gas-url").value.trim();
     const name0 = $("#setup-user0").value.trim();
-    const pin0 = $("#setup-pin0").value.trim();
     const name1 = $("#setup-user1").value.trim();
-    const pin1 = $("#setup-pin1").value.trim();
 
-    if (!name0 || !name1 || pin0.length !== 4 || pin1.length !== 4) {
-      alert("名前と4桁のPINを入力してください");
+    if (!name0 || !name1) {
+      alert("ふたりの名前を入力してください");
       return;
     }
 
     state.users = [
-      { name: name0, pin: pin0 },
-      { name: name1, pin: pin1 },
+      { name: name0 },
+      { name: name1 },
     ];
 
     if (gasUrl) CONFIG.GAS_URL = gasUrl;
@@ -112,15 +102,10 @@ function showSetup() {
     container.innerHTML = `
       <h1 class="app-title">MoneyCheck</h1>
       <p class="app-subtitle">ふたりの家計簿</p>
+      <p class="login-prompt">あなたはどっち？</p>
       <div class="login-buttons">
         <button class="login-btn" data-user="0" id="btn-user0"></button>
         <button class="login-btn" data-user="1" id="btn-user1"></button>
-      </div>
-      <div id="pin-area" class="pin-area hidden">
-        <p id="pin-label"></p>
-        <input type="password" id="pin-input" maxlength="4" placeholder="4桁のPIN" inputmode="numeric" autocomplete="off">
-        <button id="pin-submit" class="btn btn-primary">ログイン</button>
-        <p id="pin-error" class="error-text hidden">PINが違います</p>
       </div>
     `;
     renderLoginButtons();
@@ -139,48 +124,13 @@ function renderLoginButtons() {
   [btn0, btn1].forEach((btn) => {
     btn.addEventListener("click", () => {
       const idx = parseInt(btn.dataset.user);
-      btn0.classList.toggle("selected", idx === 0);
-      btn1.classList.toggle("selected", idx === 1);
-
-      const pinArea = $("#pin-area");
-      const pinLabel = $("#pin-label");
-      pinArea.classList.remove("hidden");
-      pinLabel.textContent = `${state.users[idx].name} のPINを入力`;
-      $("#pin-input").value = "";
-      $("#pin-error").classList.add("hidden");
-      $("#pin-input").focus();
-
-      // Store selected user index temporarily
-      pinArea.dataset.selectedUser = idx;
+      state.currentUser = { index: idx, name: state.users[idx].name };
+      $("#login-screen").classList.add("hidden");
+      $("#app-screen").classList.remove("hidden");
+      updateCategories();
+      loadSummary();
     });
   });
-
-  // PIN submit
-  const pinSubmit = $("#pin-submit");
-  if (pinSubmit) {
-    pinSubmit.addEventListener("click", handleLogin);
-    $("#pin-input").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") handleLogin();
-    });
-  }
-}
-
-function handleLogin() {
-  const pinArea = $("#pin-area");
-  const idx = parseInt(pinArea.dataset.selectedUser);
-  const pin = $("#pin-input").value;
-
-  if (pin === state.users[idx].pin) {
-    state.currentUser = { index: idx, name: state.users[idx].name };
-    $("#login-screen").classList.add("hidden");
-    $("#app-screen").classList.remove("hidden");
-    updateCategories();
-    loadSummary();
-  } else {
-    $("#pin-error").classList.remove("hidden");
-    $("#pin-input").value = "";
-    $("#pin-input").focus();
-  }
 }
 
 // === Logout ===
@@ -191,12 +141,6 @@ function initLogout() {
       state.currentUser = null;
       $("#app-screen").classList.add("hidden");
       $("#login-screen").classList.remove("hidden");
-      // Reset PIN area
-      const pinArea = $("#pin-area");
-      if (pinArea) {
-        pinArea.classList.add("hidden");
-        $$(".login-btn").forEach((b) => b.classList.remove("selected"));
-      }
     });
   }
 }

@@ -64,10 +64,15 @@ body {
   margin-bottom: 40px;
 }
 
+.login-prompt {
+  font-size: 16px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
 .login-buttons {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
 }
 
 .login-btn {
@@ -93,48 +98,6 @@ body {
   transform: scale(0.97);
 }
 
-.login-btn.selected {
-  border-color: var(--accent);
-  background: #FDF5F0;
-}
-
-.pin-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 240px;
-}
-
-.pin-area p {
-  font-size: 14px;
-  color: var(--text-light);
-}
-
-#pin-input {
-  width: 100%;
-  text-align: center;
-  font-size: 24px;
-  letter-spacing: 8px;
-  padding: 12px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  color: var(--text);
-  font-family: var(--font);
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-#pin-input:focus {
-  border-color: var(--accent);
-}
-
-.error-text {
-  color: var(--expense);
-  font-size: 13px;
-}
 
 /* === Buttons === */
 .btn {
