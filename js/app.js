@@ -25,11 +25,28 @@ const state = {
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
 
+// === Templates ===
+const TEMPLATES = [
+  { emoji: "\uD83D\uDED2", label: "スーパー", category: "食費", memo: "スーパーで買い物" },
+  { emoji: "\uD83C\uDF5A", label: "外食", category: "食費", memo: "外食" },
+  { emoji: "\uD83C\uDFE0", label: "家賃", category: "家賃", memo: "家賃" },
+  { emoji: "\u26A1", label: "電気", category: "光熱費", memo: "電気代" },
+  { emoji: "\uD83D\uDCA7", label: "水道", category: "光熱費", memo: "水道代" },
+  { emoji: "\uD83D\uDD25", label: "ガス", category: "光熱費", memo: "ガス代" },
+  { emoji: "\uD83D\uDCF1", label: "スマホ", category: "通信費", memo: "スマホ代" },
+  { emoji: "\uD83D\uDE83", label: "電車", category: "交通費", memo: "電車" },
+  { emoji: "\uD83E\uDDF4", label: "日用品", category: "日用品", memo: "日用品" },
+  { emoji: "\uD83C\uDFAC", label: "娯楽", category: "娯楽", memo: "" },
+  { emoji: "\uD83C\uDFE5", label: "病院", category: "医療", memo: "病院" },
+  { emoji: "\uD83D\uDCB0", label: "給与", category: "給与", memo: "給与", type: "income" },
+];
+
 // === Initialization ===
 document.addEventListener("DOMContentLoaded", () => {
   initDate();
   initTabs();
   initToggle();
+  initTemplates();
   initForm();
   initMonthSelector();
   initLogout();
@@ -182,6 +199,40 @@ function updateCategories() {
     opt.value = cat;
     opt.textContent = cat;
     select.appendChild(opt);
+  });
+}
+
+// === Templates ===
+function initTemplates() {
+  const list = $("#template-list");
+  if (!list) return;
+
+  list.innerHTML = TEMPLATES.map((t, i) => `
+    <button type="button" class="template-btn" data-index="${i}">
+      <span class="template-emoji">${t.emoji}</span>${t.label}
+    </button>
+  `).join("");
+
+  list.addEventListener("click", (e) => {
+    const btn = e.target.closest(".template-btn");
+    if (!btn) return;
+
+    const t = TEMPLATES[parseInt(btn.dataset.index)];
+    const type = t.type || "expense";
+
+    // Set type toggle
+    state.transactionType = type;
+    $$(".toggle").forEach((tog) => {
+      tog.classList.toggle("active", tog.dataset.type === type);
+    });
+    updateCategories();
+
+    // Fill fields
+    $("#input-category").value = t.category;
+    $("#input-memo").value = t.memo;
+
+    // Focus amount
+    $("#input-amount").focus();
   });
 }
 

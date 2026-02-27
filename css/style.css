@@ -241,6 +241,42 @@ body {
   margin-bottom: 16px;
 }
 
+/* === Templates === */
+.template-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.template-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  font-family: var(--font);
+}
+
+.template-btn:hover {
+  border-color: var(--accent);
+  background: #FDF5F0;
+}
+
+.template-btn:active {
+  transform: scale(0.95);
+}
+
+.template-emoji {
+  font-size: 15px;
+}
+
 /* === Form === */
 .form-group {
   margin-bottom: 20px;
