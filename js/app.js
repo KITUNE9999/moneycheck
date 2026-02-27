@@ -6,7 +6,7 @@
 // === Configuration ===
 // Google Apps Script Web App URL (デプロイ後に設定)
 const CONFIG = {
-  GAS_URL: "", // ← Apps Script デプロイ後にURLを貼り付け
+  GAS_URL: "https://script.google.com/macros/s/AKfycbyzOo0yGsVPfcWbyTI1KdWBDSpQfKdcyi3GZuoJSVPQoucvFa15S5wQb_IeLYCHVzz8/exec",
 };
 
 // === State ===
@@ -42,7 +42,6 @@ function loadConfig() {
   if (saved) {
     const config = JSON.parse(saved);
     state.users = config.users || [];
-    if (config.gasUrl) CONFIG.GAS_URL = config.gasUrl;
   }
 
   if (state.users.length === 0) {
@@ -61,10 +60,6 @@ function showSetup() {
     <p class="app-subtitle">初回セットアップ</p>
     <div class="card" style="width:100%;max-width:320px;">
       <div class="form-group">
-        <label>Apps Script URL</label>
-        <input type="url" id="setup-gas-url" placeholder="https://script.google.com/..." style="font-size:13px;">
-      </div>
-      <div class="form-group">
         <label>ユーザー1 の名前</label>
         <input type="text" id="setup-user0" placeholder="例: たろう">
       </div>
@@ -77,7 +72,6 @@ function showSetup() {
   `;
 
   $("#setup-submit").addEventListener("click", () => {
-    const gasUrl = $("#setup-gas-url").value.trim();
     const name0 = $("#setup-user0").value.trim();
     const name1 = $("#setup-user1").value.trim();
 
@@ -91,11 +85,8 @@ function showSetup() {
       { name: name1 },
     ];
 
-    if (gasUrl) CONFIG.GAS_URL = gasUrl;
-
     localStorage.setItem("moneycheck_config", JSON.stringify({
       users: state.users,
-      gasUrl: CONFIG.GAS_URL,
     }));
 
     // Re-render login screen
