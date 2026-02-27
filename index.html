@@ -183,7 +183,6 @@
                 <th>カテゴリ</th>
                 <th>金額</th>
                 <th>誰</th>
-                <th></th>
               </tr>
             </thead>
             <tbody id="history-body"></tbody>
@@ -192,6 +191,53 @@
         <p id="history-empty" class="empty-state hidden">データがありません</p>
       </div>
     </main>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content card">
+        <h3 class="section-title">編集</h3>
+        <input type="hidden" id="edit-id">
+        <div class="form-group">
+          <label for="edit-amount">金額</label>
+          <div class="amount-input-wrap">
+            <span class="currency-symbol">&yen;</span>
+            <input type="number" id="edit-amount" inputmode="numeric" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>種別</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle edit-toggle active" data-type="expense">支出</button>
+            <button type="button" class="toggle edit-toggle" data-type="income">収入</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-category">カテゴリ</label>
+          <select id="edit-category" required></select>
+        </div>
+        <div class="form-group">
+          <label for="edit-date">日付</label>
+          <input type="date" id="edit-date" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-user">入力者</label>
+          <select id="edit-user">
+            <option value="としひこ">としひこ</option>
+            <option value="あつこ">あつこ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit-memo">メモ</label>
+          <input type="text" id="edit-memo">
+        </div>
+        <div class="modal-actions edit-actions">
+          <button type="button" id="btn-edit-delete" class="btn btn-danger">削除</button>
+          <button type="button" id="btn-edit-cancel" class="btn btn-secondary">キャンセル</button>
+          <button type="button" id="btn-edit-save" class="btn btn-primary">更新</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Loading Overlay -->

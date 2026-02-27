@@ -383,6 +383,31 @@ body {
   background: var(--border);
 }
 
+.btn-danger {
+  background: var(--bg);
+  color: var(--expense);
+  border: 1.5px solid var(--expense);
+  padding: 12px 24px;
+}
+
+.btn-danger:hover {
+  background: #FDF5F5;
+}
+
+/* Edit modal: delete left, cancel center, update right */
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-actions .btn-danger {
+  margin-right: auto;
+}
+
+.edit-actions .btn-primary {
+  margin-left: auto;
+}
+
 /* === Form === */
 .form-group {
   margin-bottom: 20px;
@@ -726,26 +751,18 @@ input[type="text"]:focus {
   color: var(--text-light);
 }
 
-.btn-delete {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-light);
-  font-size: 12px;
-  padding: 4px 8px;
+/* Tappable rows */
+.history-table tbody tr {
   cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font);
+  transition: background 0.15s;
 }
 
-.btn-delete:hover {
-  border-color: var(--expense);
-  color: var(--expense);
-  background: #FDF5F5;
+.history-table tbody tr:hover {
+  background: rgba(196, 123, 90, 0.06);
 }
 
-.btn-delete:active {
-  transform: scale(0.95);
+.history-table tbody tr:active {
+  background: rgba(196, 123, 90, 0.12);
 }
 
 #history-table-wrap {

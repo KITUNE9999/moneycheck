@@ -20,6 +20,9 @@ function doGet(e) {
     if (action === "addTransaction") {
       return jsonResponse(addTransaction(e.parameter));
     }
+    if (action === "updateTransaction") {
+      return jsonResponse(updateTransaction(e.parameter));
+    }
     if (action === "deleteTransaction") {
       return jsonResponse(deleteTransaction(e.parameter.id));
     }
@@ -70,6 +73,32 @@ function addTransaction(data) {
   ]);
 
   return { success: true, id: id };
+}
+
+/**
+ * 取引を更新
+ */
+function updateTransaction(data) {
+  var sheet = getSheet(SHEET_TRANSACTIONS);
+  if (!sheet) {
+    return { error: "Sheet not found" };
+  }
+
+  var rows = sheet.getDataRange().getValues();
+  for (var i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]) === String(data.id)) {
+      var row = i + 1;
+      sheet.getRange(row, 2).setValue(data.date);
+      sheet.getRange(row, 3).setValue(Number(data.amount));
+      sheet.getRange(row, 4).setValue(data.type);
+      sheet.getRange(row, 5).setValue(data.category);
+      sheet.getRange(row, 6).setValue(data.user);
+      sheet.getRange(row, 7).setValue(data.memo || "");
+      return { success: true };
+    }
+  }
+
+  return { error: "Transaction not found" };
 }
 
 /**

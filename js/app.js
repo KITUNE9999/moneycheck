@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initForm();
   initMonthSelector();
   initHistoryMonth();
+  initEditModal();
   initLogout();
   loadConfig();
 });
@@ -496,6 +497,9 @@ function renderHistory(transactions) {
   const empty = $("#history-empty");
   const sorted = [...transactions].sort((a, b) => b.date.localeCompare(a.date));
 
+  // Store for edit modal
+  state.historyData = sorted;
+
   if (sorted.length === 0) {
     body.innerHTML = "";
     empty.classList.remove("hidden");
@@ -505,8 +509,8 @@ function renderHistory(transactions) {
   empty.classList.add("hidden");
   const fmt = (n) => parseInt(n).toLocaleString();
 
-  body.innerHTML = sorted.map((t) => `
-    <tr>
+  body.innerHTML = sorted.map((t, i) => `
+    <tr data-index="${i}">
       <td>${escapeHtml(t.date.substring(5))}</td>
       <td>
         ${escapeHtml(t.category)}
@@ -516,25 +520,115 @@ function renderHistory(transactions) {
         ${t.type === "income" ? "+" : "-"}\u00A5${fmt(t.amount)}
       </td>
       <td>${escapeHtml(t.user)}</td>
-      <td><button class="btn-delete" data-id="${escapeHtml(t.id)}">削除</button></td>
     </tr>
   `).join("");
 
-  // Bind delete buttons
-  body.querySelectorAll(".btn-delete").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      if (!confirm("この記録を削除しますか？")) return;
-      btn.disabled = true;
-      btn.textContent = "...";
-      try {
-        await callGAS("deleteTransaction", { id: btn.dataset.id });
-        loadHistory();
-      } catch (err) {
-        alert("削除に失敗しました");
-        btn.disabled = false;
-        btn.textContent = "削除";
-      }
+  // Bind row tap → open edit modal
+  body.querySelectorAll("tr").forEach((row) => {
+    row.addEventListener("click", () => {
+      const t = state.historyData[parseInt(row.dataset.index)];
+      openEditModal(t);
     });
+  });
+}
+
+// === Edit Modal ===
+function openEditModal(t) {
+  const modal = $("#edit-modal");
+  const type = t.type || "expense";
+
+  $("#edit-id").value = t.id;
+  $("#edit-amount").value = parseInt(t.amount);
+  $("#edit-date").value = t.date;
+  $("#edit-memo").value = t.memo || "";
+  $("#edit-user").value = t.user;
+
+  // Set type toggle
+  $$(".edit-toggle").forEach((tog) => {
+    tog.classList.toggle("active", tog.dataset.type === type);
+  });
+  fillEditCategories(type);
+  $("#edit-category").value = t.category;
+
+  modal.classList.remove("hidden");
+}
+
+function fillEditCategories(type) {
+  const select = $("#edit-category");
+  const cats = state.categories[type] || [];
+  select.innerHTML = cats.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+}
+
+function closeEditModal() {
+  $("#edit-modal").classList.add("hidden");
+}
+
+function initEditModal() {
+  const modal = $("#edit-modal");
+  if (!modal) return;
+
+  // Type toggle
+  $$(".edit-toggle").forEach((tog) => {
+    tog.addEventListener("click", () => {
+      $$(".edit-toggle").forEach((t) => t.classList.remove("active"));
+      tog.classList.add("active");
+      fillEditCategories(tog.dataset.type);
+    });
+  });
+
+  // Close
+  $("#btn-edit-cancel").addEventListener("click", closeEditModal);
+  modal.querySelector(".modal-backdrop").addEventListener("click", closeEditModal);
+
+  // Update
+  $("#btn-edit-save").addEventListener("click", async () => {
+    const id = $("#edit-id").value;
+    const amount = parseInt($("#edit-amount").value);
+    const type = modal.querySelector(".edit-toggle.active").dataset.type;
+    const category = $("#edit-category").value;
+    const date = $("#edit-date").value;
+    const user = $("#edit-user").value;
+    const memo = $("#edit-memo").value.trim();
+
+    if (!amount || !category || !date) {
+      alert("金額・カテゴリ・日付を入力してください");
+      return;
+    }
+
+    const btn = $("#btn-edit-save");
+    btn.disabled = true;
+    btn.textContent = "更新中...";
+
+    try {
+      await callGAS("updateTransaction", { id, date, amount, type, category, user, memo });
+      closeEditModal();
+      loadHistory();
+    } catch (err) {
+      alert("更新に失敗しました");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "更新";
+    }
+  });
+
+  // Delete
+  $("#btn-edit-delete").addEventListener("click", async () => {
+    if (!confirm("この記録を削除しますか？")) return;
+    const id = $("#edit-id").value;
+    const btn = $("#btn-edit-delete");
+    btn.disabled = true;
+    btn.textContent = "削除中...";
+
+    try {
+      await callGAS("deleteTransaction", { id });
+      closeEditModal();
+      loadHistory();
+    } catch (err) {
+      alert("削除に失敗しました");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "削除";
+    }
   });
 }
 
